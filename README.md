@@ -1,23 +1,68 @@
-# JSON editor
-A terminal-based JSON editor built with Rust and `ratatui`. It provides an interactive interface for editing JSON directly in the terminal. The buffer content can be redirected to a file using:
+# JSON Editor — TUI
 
-```sh
-cargo run >> test.json
-```
+Terminal-based JSON editor built with Rust, [ratatui](https://github.com/ratatui-org/ratatui) and [crossterm](https://github.com/crossterm-rs/crossterm). Lets you build flat key-value JSON objects interactively and export them to a file.
 
-## Features
+## Controls
 
-- **Interactive TUI Interface**  
-  Edit JSON structures with a clean and intuitive terminal UI.
-- **Live Editing**  
-  Create JSON in real-time with editing commands.
-- **Export to File**  
-  Redirect the buffer content to a file using standard output redirection.
+**Normal mode**
+
+| Key | Action |
+|---|---|
+| `e` | Add a new key-value pair |
+| `q` | Quit (prompts for export) |
+
+**Editing mode** (popup)
+
+| Key | Action |
+|---|---|
+| `Tab` | Switch between Key / Value fields |
+| `Enter` | Confirm and save the pair |
+| `Backspace` | Delete last character |
+| `Esc` | Cancel and return to normal mode |
+
+**Exit prompt**
+
+| Key | Action |
+|---|---|
+| `y` | Print JSON to stdout and exit |
+| `n` / `q` | Exit without output |
 
 ## Usage
 
-1. Clone the repository and navigate to the project directory.
-2. Build and run the application with `cargo run`.
-3. Interact with the JSON editor via the terminal.
-4. Export the buffer to a file with output redirection:
+```bash
+cargo run
+```
 
+Save output to a file:
+
+```bash
+cargo run > output.json
+```
+
+> The app renders to `stderr` so `stdout` stays clean for redirection.
+
+## Dependencies
+
+| Crate | Purpose |
+|---|---|
+| `ratatui` | TUI layout and widgets |
+| `crossterm` | Cross-platform terminal input/raw mode |
+| `serde_json` | JSON serialization on export |
+| `color-eyre` | Error handling |
+
+## Project Structure
+
+```
+.
+├── src/
+│   ├── main.rs   # Terminal setup, event loop, key handling
+│   ├── app.rs    # State machine (Main / Editing / Exiting)
+│   └── ui.rs     # Ratatui layout, popup rendering
+├── test.json     # Sample output file
+└── Cargo.toml
+```
+
+## Limitations
+
+- Only supports flat `String → String` pairs — no nested objects or arrays
+- No editing or deleting existing pairs after they are saved
